@@ -1,34 +1,25 @@
 # Smart-Exapence-Tracker
 
 
-### 2. Mermaid Chart Code (Architecture Flow)
-
-```
 graph TD
-    A[User] -->|Opens browser| B[Streamlit App<br>app.py]
+    U[User] -->|Opens App| A[Streamlit App<br>app.py]
 
-    B --> C[Sidebar Menu<br>Dashboard • Add • Summary • Charts • Export]
+    A --> S[Sidebar Navigation<br>Dashboard | Add Expense | Summary | Charts | Export]
 
-    subgraph "Data Flow"
-        C --> D[Add Expense]
-        D --> E[database.py<br>→ add_expense() → SQLite expenses.db]
+    subgraph Data_Flow
+        S --> AE[Add Expense]
+        AE --> DBF[database.py<br>add_expense()]
+        DBF --> DB[(SQLite DB<br>expenses.db)]
 
-        C --> F[View Summary / Charts]
-        F --> G[expense_manager.py<br>→ get_monthly_summary() → Pandas DataFrame]
+        S --> VS[View Summary / Charts]
+        DB --> EM[expense_manager.py<br>get_monthly_summary()]
+        EM --> DF[Pandas DataFrame]
+        DF --> CH[Streamlit Charts<br>Bar / Pie]
 
-        G --> H[visuals / Streamlit<br>→ Orange Bar Chart<br>st.bar_chart(color='#FF8C00')]
-
-        C --> I[Export CSV]
-        I --> J[Pandas → to_csv() → Download button]
+        S --> EX[Export Data]
+        DF --> CSV[Pandas to_csv()<br>Download CSV]
     end
 
-    E -->|Persistent storage| K[(SQLite Database<br>expenses table)]
-    K -->|SELECT queries| G
-
-    style B fill:#1e3a8a,stroke:#fff,stroke-width:2px,color:#fff
-    style K fill:#065f46,stroke:#fff,color:#fff
-
-```
-
-
+    style A fill:#1e3a8a,color:#ffffff,stroke:#ffffff
+    style DB fill:#065f46,color:#ffffff,stroke:#ffffff
 
