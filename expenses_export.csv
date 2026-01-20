@@ -1,0 +1,5 @@
+id,date,category,description,amount
+1,2026-01-20,Food,Test lunch,12.5
+2,2026-01-20,Food,Lunch at cafe,8.75
+3,2026-01-20,Transport,Bus fare,2.4
+4,2026-01-20,Utilities,Electricity bill,50.0
