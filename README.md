@@ -1,28 +1,29 @@
 # Smart Expense Tracker 💰
 
-A modern, user-friendly expense tracking web application built with **Python, Streamlit, SQLite, Pandas, and Matplotlib**.  
-Track daily expenses, view monthly summaries, analyze spending with orange bar charts, and export data — all in a clean browser interface.
+A modern, user-friendly expense tracking web application built with Python, Streamlit, SQLite, Pandas, and Matplotlib.  
+Track daily expenses, view monthly summaries, analyze spending with orange bar charts, and export data in a clean browser interface.
 
-🔗 **Live Demo:** https://smart-expence-tracker.streamlit.app/
+🔗 Live Demo: https://smart-expence-tracker.streamlit.app/
 
+---
 
 ## 🏗️ Architecture Diagram
 
 ```mermaid
 graph TD
-    U[User] --> A[Streamlit App<br/>app.py]
+    U[User] --> A[Streamlit App]
 
-    A --> S[Sidebar Navigation<br/>Dashboard<br/>Add Expense<br/>Summary<br/>Charts<br/>Export]
-
+    A --> S[Sidebar Navigation]
     S --> AE[Add Expense]
-    AE --> DBF[database.py<br/>add_expense()]
-    DBF --> DB[(SQLite DB<br/>expenses.db)]
-
-    S --> VS[View Summary & Charts]
-    DB --> EM[expense_manager.py<br/>get_monthly_summary()]
-    EM --> DF[Pandas DataFrame]
-    DF --> CH[Streamlit Charts]
-
+    S --> VS[View Summary and Charts]
     S --> EX[Export Data]
-    DF --> CSV[Pandas to_csv()<br/>Download CSV]
+
+    AE --> DBF[database.py add_expense]
+    DBF --> DB[SQLite Database]
+
+    DB --> EM[expense_manager.py get_monthly_summary]
+    EM --> DF[Pandas DataFrame]
 ```
+
+    DF --> CH[Charts]
+    DF --> CSV[CSV Export]
