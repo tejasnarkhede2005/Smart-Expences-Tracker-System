@@ -96,31 +96,58 @@ elif page == "📊 Monthly Summary":
 
 # ────────────────────────────────────────
 elif page == "📈 Charts":
-    st.header("Visual Insights")
+    st.header("Expense Visuals")
 
-    result = get_monthly_summary()  # current month by default
+    # Let user choose current month or select another
+    now = datetime.now()
+    selected_month = st.selectbox("Month", range(1, 13), index=now.month-1, key="chart_month")
+    selected_year = st.number_input("Year", min_value=2020, max_value=now.year+1, value=now.year, key="chart_year")
+
+    result = get_monthly_summary(selected_month, selected_year)
+
     if result and not result['summary'].empty:
-        tab1, tab2 = st.tabs(["Pie Chart – Category Breakdown", "Bar Chart"])
+        st.subheader(f"Total for {selected_month:02d}/{selected_year}: ₹{result['grand_total']:,.2f}")
 
-        with tab1:
-            fig, ax = plt.subplots(figsize=(6, 6))
-            ax.pie(
-                result['summary']['Total'],
-                labels=result['summary']['Category'],
-                autopct='%1.1f%%',
-                startangle=90,
-                shadow=True
-            )
-            ax.set_title("Expense Breakdown by Category")
-            st.pyplot(fig)
+        # Show the summary table first (nice & clear)
+        st.dataframe(
+            result['summary']
+                .sort_values("Total", ascending=False)
+                .style.format({"Total": "₹{:,.2f}"})
+                .highlight_max(subset="Total", color="#d4edda"),
+            use_container_width=True
+        )
 
-        with tab2:
-            st.bar_chart(
-                result['summary'].set_index('Category')['Total'],
-                use_container_width=True
+        # Only bar chart (horizontal or vertical — horizontal often looks better for categories)
+        st.subheader("Category Breakdown (Bar Chart)")
+        
+        # Horizontal bar chart — easier to read category names
+        fig_bar, ax_bar = plt.subplots(figsize=(10, max(4, len(result['summary']) * 0.5)))
+        result['summary'].sort_values("Total").plot(
+            kind='barh',
+            x='Category',
+            y='Total',
+            ax=ax_bar,
+            color='skyblue',
+            edgecolor='black'
+        )
+        ax_bar.set_xlabel("Amount (₹)")
+        ax_bar.set_title("Expenses by Category")
+        ax_bar.grid(axis='x', linestyle='--', alpha=0.7)
+        plt.tight_layout()
+        st.pyplot(fig_bar)
+
+        # Optional quick extra: daily trend line if multiple days in month
+        if len(result['df']) > 5:
+            st.subheader("Daily Spending Trend")
+            daily = result['df'].groupby(result['df']['date'].dt.date)['amount'].sum().reset_index()
+            st.line_chart(
+                daily.set_index('date')['amount'],
+                use_container_width=True,
+                color="#1f77b4"
             )
+
     else:
-        st.info("No data available to visualize yet.")
+        st.info(f"No expenses recorded for {selected_month:02d}/{selected_year} yet.")
 
 # ────────────────────────────────────────
 elif page == "📥 Export":
@@ -141,4 +168,5 @@ elif page == "📥 Export":
 
 # Footer
 st.markdown("---")
+
 st.caption("Built with ❤️ using Streamlit • SQLite • Pandas • Matplotlib")
