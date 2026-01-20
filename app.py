@@ -96,58 +96,42 @@ elif page == "📊 Monthly Summary":
 
 # ────────────────────────────────────────
 elif page == "📈 Charts":
-    st.header("Expense Visuals")
+    st.header("Visual Insights")
 
-    # Let user choose current month or select another
+    # Let user choose month/year (defaults to current)
     now = datetime.now()
-    selected_month = st.selectbox("Month", range(1, 13), index=now.month-1, key="chart_month")
-    selected_year = st.number_input("Year", min_value=2020, max_value=now.year+1, value=now.year, key="chart_year")
+    selected_month = st.selectbox("Month", range(1, 13), index=now.month - 1, key="chart_month")
+    selected_year = st.number_input("Year", min_value=2020, max_value=now.year + 1, value=now.year, key="chart_year")
 
     result = get_monthly_summary(selected_month, selected_year)
-
+    
     if result and not result['summary'].empty:
-        st.subheader(f"Total for {selected_month:02d}/{selected_year}: ₹{result['grand_total']:,.2f}")
+        st.subheader(f"Expense Breakdown – {datetime(selected_year, selected_month, 1).strftime('%B %Y')}")
+        st.markdown(f"**Total: ₹{result['grand_total']:,.2f}**")
 
-        # Show the summary table first (nice & clear)
-        st.dataframe(
-            result['summary']
-                .sort_values("Total", ascending=False)
-                .style.format({"Total": "₹{:,.2f}"})
-                .highlight_max(subset="Total", color="#d4edda"),
+        # Prepare data for bar chart
+        chart_data = result['summary'][['Category', 'Total']].copy()
+        chart_data = chart_data.sort_values('Total', ascending=False)
+
+        # Create orange bar chart using Streamlit's native bar_chart
+        st.bar_chart(
+            chart_data.set_index('Category')['Total'],
+            x_label="Category",
+            y_label="Amount (₹)",
+            color="#FF8C00",           # orange shade (you can try others: #FFA500, #FF4500, #FF7518)
             use_container_width=True
         )
 
-        # Only bar chart (horizontal or vertical — horizontal often looks better for categories)
-        st.subheader("Category Breakdown (Bar Chart)")
-        
-        # Horizontal bar chart — easier to read category names
-        fig_bar, ax_bar = plt.subplots(figsize=(10, max(4, len(result['summary']) * 0.5)))
-        result['summary'].sort_values("Total").plot(
-            kind='barh',
-            x='Category',
-            y='Total',
-            ax=ax_bar,
-            color='skyblue',
-            edgecolor='black'
+        # Optional: show the numbers in a clean table below
+        st.markdown("### Detailed Breakdown")
+        st.dataframe(
+            chart_data.style.format({"Total": "₹{:,.2f}"})
+                           .highlight_max(subset=['Total'], color='#fff3cd'),
+            use_container_width=True
         )
-        ax_bar.set_xlabel("Amount (₹)")
-        ax_bar.set_title("Expenses by Category")
-        ax_bar.grid(axis='x', linestyle='--', alpha=0.7)
-        plt.tight_layout()
-        st.pyplot(fig_bar)
-
-        # Optional quick extra: daily trend line if multiple days in month
-        if len(result['df']) > 5:
-            st.subheader("Daily Spending Trend")
-            daily = result['df'].groupby(result['df']['date'].dt.date)['amount'].sum().reset_index()
-            st.line_chart(
-                daily.set_index('date')['amount'],
-                use_container_width=True,
-                color="#1f77b4"
-            )
 
     else:
-        st.info(f"No expenses recorded for {selected_month:02d}/{selected_year} yet.")
+        st.info(f"No expenses recorded for {datetime(selected_year, selected_month, 1).strftime('%B %Y')} yet.")
 
 # ────────────────────────────────────────
 elif page == "📥 Export":
@@ -170,3 +154,4 @@ elif page == "📥 Export":
 st.markdown("---")
 
 st.caption("Built with ❤️ using Streamlit • SQLite • Pandas • Matplotlib")
+
