@@ -1,6 +1,6 @@
 # Smart-Exapence-Tracker
 
-
+```
 graph TD
     U[User] -->|Opens App| A[Streamlit App<br>app.py]
 
@@ -23,3 +23,4 @@ graph TD
     style A fill:#1e3a8a,color:#ffffff,stroke:#ffffff
     style DB fill:#065f46,color:#ffffff,stroke:#ffffff
 
+```
