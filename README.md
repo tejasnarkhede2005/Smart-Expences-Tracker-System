@@ -5,7 +5,6 @@ Track daily expenses, view monthly summaries, analyze spending with orange bar c
 
 🔗 **Live Demo:** https://smart-expence-tracker.streamlit.app/
 
----
 
 ## 🏗️ Architecture Diagram
 
@@ -26,3 +25,4 @@ graph TD
 
     S --> EX[Export Data]
     DF --> CSV[Pandas to_csv()<br/>Download CSV]
+```
