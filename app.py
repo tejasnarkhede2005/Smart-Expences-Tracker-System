@@ -126,7 +126,7 @@ elif page == "📈 Charts":
         st.markdown("### Detailed Breakdown")
         st.dataframe(
             chart_data.style.format({"Total": "₹{:,.2f}"})
-                           .highlight_max(subset=['Total'], color='#fff3cd'),
+                           .highlight_max(subset=['Total'], color=''),
             use_container_width=True
         )
 
@@ -154,5 +154,6 @@ elif page == "📥 Export":
 st.markdown("---")
 
 st.caption("Built By Tejas")
+
 
 
