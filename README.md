@@ -1,6 +1,6 @@
 # Smart Expense Tracker 💰
 
-A modern, user-friendly expense tracking web application built with **Python**, **Streamlit**, **SQLite**, **Pandas**, and **Matplotlib**.  
+A modern, user-friendly expense tracking web application built with Python, Streamlit, SQLite, Pandas, and Matplotlib.  
 Track daily expenses, view monthly summaries, analyze spending with orange bar charts, and export data — all in a clean browser interface.
 
 [Expense Tracker Demo: ([https://via.placeholder.com/800x400.png?text=Smart+Expense+Tracker+Screenshot](https://smart-expence-tracker.streamlit.app/))  
